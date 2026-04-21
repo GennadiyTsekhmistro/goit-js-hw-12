@@ -7,7 +7,17 @@
     <title>goit-js-hw-12</title>
   </head>
   <body>
-    <div id="app"></div>
+    <form id="search-form">
+      <input type="text" name="query" placeholder="Search images..." />
+      <button type="submit">Search</button>
+    </form>
+
+    <div id="loader" hidden>Loading...</div>
+
+    <ul id="gallery"></ul>
+
+    <button id="load-more" hidden>Load more</button>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
