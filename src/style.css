@@ -54,6 +54,10 @@ body {
   margin: 0;
 }
 
+.hidden {
+  display: none;
+}
+
 h1,
 h2 {
   font-family: var(--heading);
