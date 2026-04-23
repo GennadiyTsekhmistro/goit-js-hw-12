@@ -1,5 +1,3 @@
-globalThis.global = globalThis;
-
 import { getImagesByQuery } from "./js/pixabay-api";
 import {
   createGallery,
@@ -22,6 +20,7 @@ let totalPages = 0;
 
 // 🔍 SUBMIT (пошук)
 form.addEventListener("submit", async (event) => {
+  console.log("submit працює");
   event.preventDefault();
 
   currentQuery = event.target.query.value.trim();
@@ -37,6 +36,7 @@ form.addEventListener("submit", async (event) => {
 
   try {
     const data = await getImagesByQuery(currentQuery, page);
+    console.log("API RESPONSE:", data);
 
     if (data.hits.length === 0) {
       iziToast.error({

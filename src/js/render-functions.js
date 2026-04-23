@@ -1,6 +1,7 @@
 import SimpleLightbox from "simplelightbox/dist/simple-lightbox.esm.js";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
+
 const lightbox = new SimpleLightbox("#gallery a", {
   captionsData: "alt",
   captionDelay: 250,
