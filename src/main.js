@@ -1,3 +1,5 @@
+globalThis.global = globalThis;
+
 import { getImagesByQuery } from "./js/pixabay-api";
 import {
   createGallery,
@@ -5,18 +7,20 @@ import {
   showLoader,
   hideLoader,
   showLoadMoreButton,
-  hideLoadMoreButton
+  hideLoadMoreButton,
 } from "./js/render-functions";
 
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 const form = document.querySelector("#search-form");
+const loadMoreBtn = document.querySelector("#load-more");
 
 let page = 1;
 let currentQuery = "";
 let totalPages = 0;
 
+// 🔍 SUBMIT (пошук)
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -24,13 +28,14 @@ form.addEventListener("submit", async (event) => {
 
   if (!currentQuery) return;
 
+  // reset стану
   page = 1;
   clearGallery();
   hideLoadMoreButton();
 
-  try {
-    showLoader();
+  showLoader();
 
+  try {
     const data = await getImagesByQuery(currentQuery, page);
 
     if (data.hits.length === 0) {
@@ -52,6 +57,8 @@ form.addEventListener("submit", async (event) => {
       hideLoadMoreButton();
     }
 
+    // ✅ очищення input (ВАЖЛИВО)
+    event.target.reset();
   } catch (error) {
     console.log(error);
   } finally {
@@ -59,39 +66,39 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
-document
-  .querySelector("#load-more")
-  .addEventListener("click", async () => {
-    page += 1;
+// 🔽 LOAD MORE
+loadMoreBtn.addEventListener("click", async () => {
+  page += 1;
 
-    try {
-      showLoader();
+  showLoader();
 
-      const data = await getImagesByQuery(currentQuery, page);
+  try {
+    const data = await getImagesByQuery(currentQuery, page);
 
-      createGallery(data.hits);
+    createGallery(data.hits);
 
-      // scroll
-      const card = document.querySelector("#gallery li");
-      const cardHeight = card.getBoundingClientRect().height;
+    // 📌 SCROLL (після рендеру)
+    const card = document.querySelector("#gallery li");
+    const cardHeight = card.getBoundingClientRect().height;
 
-      window.scrollBy({
-        top: cardHeight * 2,
-        behavior: "smooth",
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: "smooth",
+    });
+
+    // 📌 кінець колекції
+    if (page >= totalPages) {
+      hideLoadMoreButton();
+
+      iziToast.info({
+        message:
+          "We're sorry, but you've reached the end of search results.",
+        position: "topRight",
       });
-
-      if (page >= totalPages) {
-        hideLoadMoreButton();
-
-        iziToast.info({
-          message: "We're sorry, but you've reached the end of search results.",
-          position: "topRight",
-        });
-      }
-
-    } catch (error) {
-      console.log(error);
-    } finally {
-      hideLoader();
     }
-  });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    hideLoader();
+  }
+});
