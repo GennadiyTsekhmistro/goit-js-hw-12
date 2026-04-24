@@ -1,17 +1,22 @@
 import SimpleLightbox from "simplelightbox/dist/simple-lightbox.esm.js";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-
-const lightbox = new SimpleLightbox("#gallery a", {
-  captionsData: "alt",
-  captionDelay: 250,
-});
-
 const gallery = document.querySelector("#gallery");
 const loader = document.querySelector("#loader");
 const loadMoreBtn = document.querySelector("#load-more");
 
+let lightbox = null;
 
+export function initLightbox() {
+  if (!lightbox) {
+    lightbox = new SimpleLightbox("#gallery a", {
+      captionsData: "alt",
+      captionDelay: 250,
+    });
+  } else {
+    lightbox.refresh();
+  }
+}
 
 export function createGallery(images) {
   const markup = images
@@ -27,7 +32,8 @@ export function createGallery(images) {
     .join("");
 
   gallery.insertAdjacentHTML("beforeend", markup);
-  lightbox.refresh();
+
+  initLightbox(); // 🔥 ОЦЕ ВАЖЛИВО
 }
 
 export function clearGallery() {
