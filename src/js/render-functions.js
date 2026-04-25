@@ -1,15 +1,26 @@
-import SimpleLightbox from "simplelightbox/dist/simple-lightbox.esm.js";
+import * as SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-const gallery = document.querySelector("#gallery");
-const loader = document.querySelector("#loader");
-const loadMoreBtn = document.querySelector("#load-more");
+let lightbox;
 
-let lightbox = null;
+export function createGallery(hits, galleryEl) {
+  const markup = hits
+    .map(hit => `
+      <a class="gallery-item" href="${hit.largeImageURL}">
+        <img
+          class="gallery-image"
+          src="${hit.webformatURL}"
+          alt="${hit.tags}"
+          loading="lazy"
+        />
+      </a>
+    `)
+    .join("");
 
-export function initLightbox() {
+  galleryEl.innerHTML = markup;
+
   if (!lightbox) {
-    lightbox = new SimpleLightbox("#gallery a", {
+    lightbox = new SimpleLightbox.default(".gallery a", {
       captionsData: "alt",
       captionDelay: 250,
     });
@@ -18,40 +29,6 @@ export function initLightbox() {
   }
 }
 
-export function createGallery(images) {
-  const markup = images
-    .map(
-      (img) => `
-      <li>
-        <a href="${img.largeImageURL}">
-          <img src="${img.webformatURL}" alt="${img.tags}" />
-        </a>
-      </li>
-    `
-    )
-    .join("");
-
-  gallery.insertAdjacentHTML("beforeend", markup);
-
-  initLightbox(); // 🔥 ОЦЕ ВАЖЛИВО
-}
-
-export function clearGallery() {
-  gallery.innerHTML = "";
-}
-
-export function showLoader() {
-  loader.classList.remove("is-hidden");
-}
-
-export function hideLoader() {
-  loader.classList.add("is-hidden");
-}
-
-export function showLoadMoreButton() {
-  loadMoreBtn.classList.remove("is-hidden");
-}
-
-export function hideLoadMoreButton() {
-  loadMoreBtn.classList.add("is-hidden");
+export function clearGallery(galleryEl) {
+  galleryEl.innerHTML = "";
 }
