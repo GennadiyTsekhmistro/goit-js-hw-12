@@ -1,4 +1,4 @@
-import * as SimpleLightbox from "simplelightbox";
+import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
 let lightbox;
@@ -24,7 +24,7 @@ export function createGallery(hits, galleryEl) {
   galleryEl.insertAdjacentHTML("beforeend", markup);
 
   if (!lightbox) {
-    lightbox = new SimpleLightbox.default(".gallery a", {
+    lightbox = new SimpleLightbox(".gallery a", {
       captionsData: "alt",
       captionDelay: 250,
     });
