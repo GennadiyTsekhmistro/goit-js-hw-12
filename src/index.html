@@ -8,15 +8,16 @@
   </head>
   <body>
 
-    <form id="search-form">
+    <form class="form" id="search-form">
       <input type="text" name="query" placeholder="Search images..." />
       <button type="submit">Search</button>
     </form>
 
-    <div id="gallery" class="gallery"></div>
+    <ul id="gallery" class="gallery"></ul>
 
-    <div id="loader" class="is-hidden">Loading...</div>
-<button id="load-more" class="is-hidden">Load more</button>
+    <button id="load-more" class="hidden">Load more</button>
+
+    <span class="loader hidden">Loading...</span>
 
     <script type="module" src="./main.js"></script>
   </body>

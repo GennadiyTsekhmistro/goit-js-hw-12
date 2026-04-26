@@ -7,22 +7,23 @@ export function createGallery(hits, galleryEl) {
   const markup = hits
     .map(
       hit => `
-      <a class="gallery-item" href="${hit.largeImageURL}">
-        <img
-          class="gallery-image"
-          src="${hit.webformatURL}"
-          alt="${hit.tags}"
-          loading="lazy"
-        />
-      </a>
-    `
+<li class="gallery-item">
+  <a class="gallery-link" href="${hit.largeImageURL}">
+    <img
+      class="gallery-image"
+      src="${hit.webformatURL}"
+      alt="${hit.tags}"
+      loading="lazy"
+    />
+  </a>
+</li>
+`
     )
     .join("");
 
-  galleryEl.innerHTML = markup;
+  galleryEl.insertAdjacentHTML("beforeend", markup);
 
   if (!lightbox) {
-    // Виклик через .default, бо Vite бачить клас саме так
     lightbox = new SimpleLightbox.default(".gallery a", {
       captionsData: "alt",
       captionDelay: 250,
