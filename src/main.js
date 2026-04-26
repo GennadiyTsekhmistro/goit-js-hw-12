@@ -1,8 +1,5 @@
 import { getImagesByQuery } from "./js/pixabay-api.js";
-import {
-  createGallery,
-  clearGallery,
-} from "./js/render-functions.js";
+import { createGallery, clearGallery } from "./js/render-functions.js";
 
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
@@ -10,46 +7,43 @@ import "izitoast/dist/css/iziToast.min.css";
 const form = document.querySelector("#search-form");
 const loadMoreBtn = document.querySelector("#load-more");
 const gallery = document.querySelector("#gallery");
+const loader = document.querySelector(".loader");
 
 let page = 1;
 let currentQuery = "";
 let totalPages = 0;
 
-// кнопка
-function showLoadMoreButton() {
+// UI
+function showLoadMore() {
   loadMoreBtn.classList.remove("hidden");
 }
-
-function hideLoadMoreButton() {
+function hideLoadMore() {
   loadMoreBtn.classList.add("hidden");
 }
-
-// loader (якщо є в HTML)
 function showLoader() {
-  document.querySelector(".loader")?.classList.remove("hidden");
+  loader.classList.remove("hidden");
 }
-
 function hideLoader() {
-  document.querySelector(".loader")?.classList.add("hidden");
+  loader.classList.add("hidden");
 }
 
-// 🔍 SEARCH
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
+// SEARCH
+form.addEventListener("submit", async e => {
+  e.preventDefault();
 
-  currentQuery = event.target.query.value.trim();
+  currentQuery = e.target.query.value.trim();
   if (!currentQuery) return;
 
   page = 1;
 
   clearGallery(gallery);
-  hideLoadMoreButton();
+  hideLoadMore();
   showLoader();
 
   try {
     const data = await getImagesByQuery(currentQuery, page);
 
-    if (!data.hits.length) {
+    if (!data.hits || data.hits.length === 0) {
       iziToast.error({
         message: "No images found",
         position: "topRight",
@@ -62,12 +56,11 @@ form.addEventListener("submit", async (event) => {
     createGallery(data.hits, gallery);
 
     if (page < totalPages) {
-      showLoadMoreButton();
+      showLoadMore();
     }
 
-    event.target.reset();
-  } catch (error) {
-    console.log(error);
+    e.target.reset();
+  } catch (err) {
     iziToast.error({
       message: "Something went wrong",
       position: "topRight",
@@ -77,7 +70,7 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
-// 🔽 LOAD MORE
+// LOAD MORE
 loadMoreBtn.addEventListener("click", async () => {
   page += 1;
 
@@ -88,25 +81,25 @@ loadMoreBtn.addEventListener("click", async () => {
 
     createGallery(data.hits, gallery);
 
-    const card = document.querySelector(".gallery a");
+    const firstCard = document.querySelector(".gallery a");
 
-    if (card) {
+    if (firstCard) {
       window.scrollBy({
-        top: card.getBoundingClientRect().height * 2,
+        top: firstCard.getBoundingClientRect().height * 2,
         behavior: "smooth",
       });
     }
 
     if (page >= totalPages) {
-      hideLoadMoreButton();
+      hideLoadMore();
 
       iziToast.info({
         message: "End of results",
         position: "topRight",
       });
     }
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   } finally {
     hideLoader();
   }
