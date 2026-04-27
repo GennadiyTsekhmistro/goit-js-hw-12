@@ -54,6 +54,13 @@ form.addEventListener("submit", async e => {
 
     if (page < totalPages) {
       showLoadMore(loadMoreBtn);
+    } else {
+      hideLoadMore(loadMoreBtn);
+
+      iziToast.info({
+        message: "End of results",
+        position: "topRight",
+      });
     }
 
     e.target.reset();
@@ -69,6 +76,7 @@ form.addEventListener("submit", async e => {
 
 // LOAD MORE
 loadMoreBtn.addEventListener("click", async () => {
+  hideLoadMore(loadMoreBtn);
   page += 1;
 
   showLoader(loader);
@@ -87,7 +95,9 @@ loadMoreBtn.addEventListener("click", async () => {
       });
     }
 
-    if (page >= totalPages) {
+    if (page < totalPages) {
+      showLoadMore(loadMoreBtn);
+    } else {
       hideLoadMore(loadMoreBtn);
 
       iziToast.info({
@@ -95,8 +105,12 @@ loadMoreBtn.addEventListener("click", async () => {
         position: "topRight",
       });
     }
+
   } catch (err) {
-    console.log(err);
+    iziToast.error({
+      message: "Failed to load more images",
+      position: "topRight",
+    });
   } finally {
     hideLoader(loader);
   }
