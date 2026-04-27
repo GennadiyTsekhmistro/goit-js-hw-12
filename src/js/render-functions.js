@@ -16,6 +16,11 @@ export function createGallery(hits, galleryEl) {
       loading="lazy"
     />
   </a>
+  <ul class="image-stats">
+  <li>Likes: ${hit.likes}</li>
+  <li>Views: ${hit.views}</li>
+  <li>Comments: ${hit.comments}</li>
+  <li>Downloads: ${hit.downloads}</li>  </ul>
 </li>
 `
     )

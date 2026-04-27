@@ -1,4 +1,4 @@
-import { getImagesByQuery } from "./js/pixabay-api.js";
+import { getImagesByQuery } from './js/pixabay-api.js';
 
 import {
   createGallery,
@@ -7,25 +7,24 @@ import {
   hideLoader,
   showLoadMore,
   hideLoadMore,
-} from "./js/render-functions.js";
+} from './js/render-functions.js';
 
-import iziToast from "izitoast";
-import "izitoast/dist/css/iziToast.min.css";
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
-const form = document.querySelector("#search-form");
-const loadMoreBtn = document.querySelector("#load-more");
-const gallery = document.querySelector("#gallery");
-const loader = document.querySelector(".loader");
+const form = document.querySelector('#search-form');
+const loadMoreBtn = document.querySelector('#load-more');
+const gallery = document.querySelector('#gallery');
+const loader = document.querySelector('.loader');
 
 let page = 1;
-let currentQuery = "";
+let currentQuery = '';
 let totalPages = 0;
 
 // UI
 
-
 // SEARCH
-form.addEventListener("submit", async e => {
+form.addEventListener('submit', async e => {
   e.preventDefault();
 
   currentQuery = e.target.query.value.trim();
@@ -42,8 +41,8 @@ form.addEventListener("submit", async e => {
 
     if (!data.hits || data.hits.length === 0) {
       iziToast.error({
-        message: "No images found",
-        position: "topRight",
+        message: 'No images found',
+        position: 'topRight',
       });
       return;
     }
@@ -58,16 +57,16 @@ form.addEventListener("submit", async e => {
       hideLoadMore(loadMoreBtn);
 
       iziToast.info({
-        message: "End of results",
-        position: "topRight",
+        message: 'End of results',
+        position: 'topRight',
       });
     }
 
     e.target.reset();
   } catch (err) {
     iziToast.error({
-      message: "Something went wrong",
-      position: "topRight",
+      message: 'Something went wrong',
+      position: 'topRight',
     });
   } finally {
     hideLoader(loader);
@@ -75,7 +74,7 @@ form.addEventListener("submit", async e => {
 });
 
 // LOAD MORE
-loadMoreBtn.addEventListener("click", async () => {
+loadMoreBtn.addEventListener('click', async () => {
   hideLoadMore(loadMoreBtn);
   page += 1;
 
@@ -84,14 +83,24 @@ loadMoreBtn.addEventListener("click", async () => {
   try {
     const data = await getImagesByQuery(currentQuery, page);
 
+    if (!data.hits || data.hits.length === 0) {
+      iziToast.error({
+        message: 'No more images found',
+        position: 'topRight',
+      });
+
+      hideLoadMore(loadMoreBtn);
+      return;
+    }
+
     createGallery(data.hits, gallery);
 
-    const firstCard = document.querySelector(".gallery a");
+    const firstCard = document.querySelector('.gallery a');
 
     if (firstCard) {
       window.scrollBy({
         top: firstCard.getBoundingClientRect().height * 2,
-        behavior: "smooth",
+        behavior: 'smooth',
       });
     }
 
@@ -101,15 +110,14 @@ loadMoreBtn.addEventListener("click", async () => {
       hideLoadMore(loadMoreBtn);
 
       iziToast.info({
-        message: "End of results",
-        position: "topRight",
+        message: 'End of results',
+        position: 'topRight',
       });
     }
-
   } catch (err) {
     iziToast.error({
-      message: "Failed to load more images",
-      position: "topRight",
+      message: 'Failed to load more images',
+      position: 'topRight',
     });
   } finally {
     hideLoader(loader);
