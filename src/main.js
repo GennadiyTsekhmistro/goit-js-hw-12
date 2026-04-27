@@ -1,5 +1,13 @@
 import { getImagesByQuery } from "./js/pixabay-api.js";
-import { createGallery, clearGallery } from "./js/render-functions.js";
+
+import {
+  createGallery,
+  clearGallery,
+  showLoader,
+  hideLoader,
+  showLoadMore,
+  hideLoadMore,
+} from "./js/render-functions.js";
 
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
@@ -14,18 +22,7 @@ let currentQuery = "";
 let totalPages = 0;
 
 // UI
-function showLoadMore() {
-  loadMoreBtn.classList.remove("hidden");
-}
-function hideLoadMore() {
-  loadMoreBtn.classList.add("hidden");
-}
-function showLoader() {
-  loader.classList.remove("hidden");
-}
-function hideLoader() {
-  loader.classList.add("hidden");
-}
+
 
 // SEARCH
 form.addEventListener("submit", async e => {
@@ -37,8 +34,8 @@ form.addEventListener("submit", async e => {
   page = 1;
 
   clearGallery(gallery);
-  hideLoadMore();
-  showLoader();
+  hideLoadMore(loadMoreBtn);
+  showLoader(loader);
 
   try {
     const data = await getImagesByQuery(currentQuery, page);
@@ -56,7 +53,7 @@ form.addEventListener("submit", async e => {
     createGallery(data.hits, gallery);
 
     if (page < totalPages) {
-      showLoadMore();
+      showLoadMore(loadMoreBtn);
     }
 
     e.target.reset();
@@ -66,7 +63,7 @@ form.addEventListener("submit", async e => {
       position: "topRight",
     });
   } finally {
-    hideLoader();
+    hideLoader(loader);
   }
 });
 
@@ -74,7 +71,7 @@ form.addEventListener("submit", async e => {
 loadMoreBtn.addEventListener("click", async () => {
   page += 1;
 
-  showLoader();
+  showLoader(loader);
 
   try {
     const data = await getImagesByQuery(currentQuery, page);
@@ -91,7 +88,7 @@ loadMoreBtn.addEventListener("click", async () => {
     }
 
     if (page >= totalPages) {
-      hideLoadMore();
+      hideLoadMore(loadMoreBtn);
 
       iziToast.info({
         message: "End of results",
@@ -101,6 +98,6 @@ loadMoreBtn.addEventListener("click", async () => {
   } catch (err) {
     console.log(err);
   } finally {
-    hideLoader();
+    hideLoader(loader);
   }
 });

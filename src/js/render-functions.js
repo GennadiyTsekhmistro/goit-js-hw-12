@@ -36,3 +36,19 @@ export function createGallery(hits, galleryEl) {
 export function clearGallery(galleryEl) {
   galleryEl.innerHTML = "";
 }
+
+export function showLoader(loaderEl) {
+  loaderEl.classList.remove("hidden");
+}
+
+export function hideLoader(loaderEl) {
+  loaderEl.classList.add("hidden");
+}
+
+export function hideLoadMore(btnEl) {
+  btnEl.classList.add("hidden");
+}
+
+export function showLoadMore(btnEl) {
+  btnEl.classList.remove("hidden");
+}
